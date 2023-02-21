@@ -1,6 +1,6 @@
 {
   "name": "k-mart",
-  "packageManager": "yarn@3.3.1",
+  "packageManager": "pnpm@7.27.1",
   "dependencies": {
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
