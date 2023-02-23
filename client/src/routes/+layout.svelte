@@ -1,8 +1,17 @@
-<script>
-  import "../app.css";
+<script lang="ts">
+    import "../app.css";
+
+    export let drawerIsOpen: Boolean = false;
+
 </script>
 
-<div class="w-screen h-screen flex flex-col">
+<div class="
+    fixed
+    w-screen
+    h-screen
+    flex
+    flex-col
+    ">
 
     <header class="
         flex-10
@@ -19,25 +28,51 @@
         py-1
         ">
 
+        <button on:click={() => drawerIsOpen = !drawerIsOpen}>Menu</button>
+
         <a href="/"><h1 class="font-bold">K-Shop</h1></a>
 
-        <nav>
-            <a href="/about">About</a>
-        </nav>
+        <a href="/about">About</a>
 
     </header>
 
-    <div class="
+    <div class={`
         flex-1
         flex
         flex-col
         px-3
         py-2
         bg-gray-200
-        overflow-y-scroll
+        overflow-y-${drawerIsOpen ? 'hidden' : 'scroll'}
         min-h-screen
-        ">
+        `}>
         <slot />
     </div>
 
 </div>
+
+{#if drawerIsOpen}
+    <div class="
+        fixed
+        z-100
+        inset-0
+        flex
+        w-screen
+    ">
+        <nav class="
+            flex-10
+            h-screen
+            flex
+            flex-col
+            bg-gray-600
+        ">
+            <a href="/about">About</a>
+            <a href="/categories">Categories</a>
+        </nav>
+
+        <div class="
+            flex-1
+            bg-transparent
+        " on:click={() => drawerIsOpen = false}></div>
+    </div>
+{/if}
