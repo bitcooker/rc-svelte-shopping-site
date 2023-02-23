@@ -64,10 +64,24 @@ router.route('/').patch(async (req: Request, res: Response) => {
             }
         }
 
-        return res.status(200).send();
+        return res.status(204).send();
 
     } catch (err) {
         return res.status(500).json(`Failed to update user. ${err}`);
+    }
+});
+
+router.route('/').delete(async (req: Request, res: Response) => {
+    try {
+        const queryResult: QueryResult = await pool.query(`SELECT * FROM users WHERE id = ${Number(req.query.id)}`);
+        if (queryResult.rowCount === 0) return res.status(404).json(`No user found with that id.`);
+
+        await pool.query(`DELETE FROM users WHERE id = ${Number(req.query.id)}`);
+
+        return res.status(204).send();
+
+    } catch (err) {
+        return res.status(500).json(`Failed to delete user. ${err}`);
     }
 });
 
