@@ -1,2 +1,2 @@
-# k-mart
-Example shopping app using Svelte, Node/Express, PostgreSQL stack.
+# k-shop
+Example shopping app using Svelte & Tailwind CSS, Node/Express, PostgreSQL stack.
