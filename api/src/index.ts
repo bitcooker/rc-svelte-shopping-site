@@ -15,16 +15,12 @@ app.use(cors());
 import { handler } from '../../client/build/handler.js'; // render client
 app.use('/client', handler);
 
-import dotenv, { DotenvConfigOptions } from 'dotenv';
-dotenv.config('./.env' as DotenvConfigOptions);
-
 import http from 'http';
 const server = http.createServer(app);
 
-const port = process.env.PORT || 3000;
-
-server.listen(port, async () => {
-  return console.log(`Server started on port ${port}`);
+import config from './config/config.js';
+server.listen(config.PORT, async () => {
+  return console.log(`Server started on port ${config.PORT}`);
 });
 
 import userController from './controller/userController.js';
