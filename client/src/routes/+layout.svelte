@@ -56,23 +56,45 @@
         fixed
         z-100
         inset-0
-        flex
         w-screen
-    ">
-        <nav class="
+        flex
+    " on:click={() => drawerIsOpen = false} on:keydown={() => drawerIsOpen = false}>
+        <div class="
             flex-10
             h-screen
             flex
             flex-col
-            bg-gray-600
+            bg-gray-400
+            shadow
         ">
-            <a href="/about">About</a>
-            <a href="/categories">Categories</a>
-        </nav>
+            <div class="
+                flex-10
+                border-b
+                border-gray-300
+                px-2
+                py-1
+            ">
+                My Account
+            </div>
+        
+            <nav class="
+                flex-1
+                px-4
+                py-2
+                flex
+                flex-col
+            ">
+                <a href="/womens">Women's</a>
+                <a href="/mens">Men's</a>
+                <a href="/outdoor">Outdoor</a>
+                <a href="/home">Home</a>
+            </nav>
+        </div>
 
         <div class="
             flex-1
-            bg-transparent
-        " on:click={() => drawerIsOpen = false}></div>
+            bg-black
+            bg-opacity-50
+        "></div>
     </div>
 {/if}
