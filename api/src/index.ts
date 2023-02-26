@@ -14,6 +14,8 @@ app.use(cors());
 
 import userController from './controller/userController.js';
 app.use('/api/user', userController);
+import productController from './controller/productController.js';
+app.use('/api/product', productController);
 
 import { handler } from '../../client/build/handler.js'; // render client
 app.use(handler);

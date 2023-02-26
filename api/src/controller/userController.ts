@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import bcrypt from 'bcrypt';
 import pg, { QueryResult } from 'pg';
 import config from '../config/config.js';
@@ -16,17 +17,21 @@ const pool = new Pool({
 const router = express.Router();
 router.use(express.json());
 
-router.route('/').post(async (req: Request, res: Response) => {
+router.route('/').post(
+    body('email').trim().not().isEmpty().isEmail(),
+    body('password').not().isEmpty(),
+    body('name').trim().not().isEmpty().escape(),
+    async (req: Request, res: Response) => {
     try {
-        const queryResult: QueryResult = await pool.query(`SELECT * FROM users WHERE email = '${req.body.email as string}'`);
+        const queryResult: QueryResult = await pool.query(`SELECT * FROM users WHERE email = '${req.body.email.isEmail().normalizeEmail() as string}'`);
         
         if (queryResult.rowCount !== 0) return res.status(400).json(`A user with that email already exists.`);
         
         const salt = await bcrypt.genSalt(Number(config.SALT_ROUNDS));
         
-        const hashedPw: string = await bcrypt.hash(req.body.password as string, salt);
+        const hashedPw: string = await bcrypt.hash(req.body.password, salt);
 
-        await pool.query(`INSERT INTO users(email, password, name) VALUES('${req.body.email as string}', '${hashedPw}', '${req.body.name as string}')`);
+        await pool.query(`INSERT INTO users(email, password, name) VALUES('${req.body.email.isEmail().normalizeEmail() as string}', '${hashedPw}', '${req.body.name.trim().escape() as string}')`);
         return res.status(201).send();
 
     } catch (err) {
@@ -47,7 +52,11 @@ router.route('/').get(async (req: Request, res: Response) => {
     }
 });
 
-router.route('/').patch(async (req: Request, res: Response) => {
+router.route('/').patch(
+    body('email').trim().isEmail(),
+    body('password'),
+    body('name').trim().escape(),
+    async (req: Request, res: Response) => {
     try {
         const queryResult: QueryResult = await pool.query(`SELECT * FROM users WHERE id = ${Number(req.query.id)}`);
         if (queryResult.rowCount === 0) return res.status(404).json(`No user found with that id.`);
@@ -57,7 +66,7 @@ router.route('/').patch(async (req: Request, res: Response) => {
         for await (const [key, value] of Object.entries(req.body)) {
             if (foundUser[key] !== req.body[key]) {
                 if (typeof value === "string") {
-                    await pool.query(`UPDATE users SET ${key} = '${value}' WHERE id = ${Number(req.query.id)}`); // include quotes
+                    await pool.query(`UPDATE users SET ${key} = '${value.trim()}' WHERE id = ${Number(req.query.id)}`); // include quotes
                 } else {
                     await pool.query(`UPDATE users SET ${key} = ${value} WHERE id = ${Number(req.query.id)}`);
                 }
