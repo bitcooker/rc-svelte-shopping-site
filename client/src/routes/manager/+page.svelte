@@ -24,6 +24,11 @@
     import axios from 'axios';
     export async function handleSubmit() {
         try {
+            for await (const size of sizes) {
+                if (!size) {
+                    sizes.splice(sizes.indexOf(size), 1);
+                }
+            }
             await axios.post(`http://localhost:3000/api/product`, {
                 name: name,
                 price: price,

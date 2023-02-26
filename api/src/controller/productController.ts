@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
 import pgarray from 'pg-array';
 import pg, { QueryResult } from 'pg';
 import config from '../config/config.js';
@@ -16,7 +17,13 @@ const pool = new Pool({
 const router = express.Router();
 router.use(express.json());
 
-router.route('/').post(async (req: Request, res: Response) => {
+router.route('/').post(
+    body('name').trim().not().isEmpty().escape(),
+    body('price').trim().not().isEmpty().isNumeric(),
+    body('categories').not().isEmpty(),
+    body('sizes').not().isEmpty(),
+    body('image_url').trim().not().isEmpty().isURL(),
+    async (req: Request, res: Response) => {
     try {
         const queryResult: QueryResult = await pool.query(`SELECT * FROM products WHERE name = '${req.body.name as string}'`);
         
@@ -43,7 +50,13 @@ router.route('/').get(async (req: Request, res: Response) => {
     }
 });
 
-router.route('/').patch(async (req: Request, res: Response) => {
+router.route('/').patch(
+    body('name').trim().escape(),
+    body('price').trim().isNumeric(),
+    body('categories').trim(),
+    body('sizes'),
+    body('image_url').trim().isURL(),
+    async (req: Request, res: Response) => {
     try {
         const queryResult: QueryResult = await pool.query(`SELECT * FROM products WHERE id = ${Number(req.query.id)}`);
         if (queryResult.rowCount === 0) return res.status(404).json(`No product found with that id.`);
