@@ -39,11 +39,16 @@ router.route('/').post(
 
 router.route('/').get(async (req: Request, res: Response) => {
     try {
+        if (req.query.all) {
+            const queryResult: QueryResult = await pool.query(`SELECT * FROM products`);
+            if (queryResult.rowCount === 0) return res.status(404).json(`No products.`);
+            
+            return res.status(200).json(queryResult.rows);
+        }
         const queryResult: QueryResult = await pool.query(`SELECT * FROM products WHERE id = ${Number(req.query.id)}`);
         if (queryResult.rowCount === 0) return res.status(404).json(`No product found with that id.`);
-
-        const { password, ...productBody } = queryResult.rows[0];
-        return res.status(200).json(productBody);
+        
+        return res.status(200).json(queryResult.rows[0]);
 
     } catch (err) {
         return res.status(500).json(`Failed to get product. ${err}`);
