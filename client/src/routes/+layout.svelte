@@ -11,6 +11,7 @@
     h-screen
     flex
     flex-col
+    overflow-auto
     ">
 
     <header class="
@@ -30,9 +31,9 @@
 
         <button on:click={() => drawerIsOpen = !drawerIsOpen}>Menu</button>
 
-        <a href="/"><h1 class="font-bold">K-Shop</h1></a>
+        <a href="/"><h1 class="font-bold text-lg">K-Shop</h1></a>
 
-        <a href="/about">About</a>
+        <a href="/about" class="self-center">About</a>
 
     </header>
 
@@ -43,7 +44,7 @@
         px-3
         py-2
         bg-gray-200
-        overflow-y-${drawerIsOpen ? 'hidden' : 'scroll'}
+        overflow-y-${drawerIsOpen ? 'hidden' : 'auto'}
         min-h-screen
         `}>
         <slot />
